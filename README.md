@@ -1,3 +1,18 @@
+---
+title: ToxiCheck
+emoji: 🕵️
+colorFrom: red
+colorTo: orange
+sdk: docker
+app_port: 8501
+tags:
+- streamlit
+- nlp
+- hate-speech
+- indonesian
+pinned: false
+---
+
 # ToxiCheck 🕵️‍♂️
 ### Indonesian Hate Speech & Abusive Language Detector
 
