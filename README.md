@@ -3,10 +3,12 @@ title: ToxiCheck
 emoji: 🕵️
 colorFrom: red
 colorTo: yellow
-sdk: docker
-app_port: 8501
+sdk: gradio
+sdk_version: 6.30.0
+python_version: 3.11
+app_file: app.py
 tags:
-- streamlit
+- gradio
 - nlp
 - hate-speech
 - indonesian
@@ -50,8 +52,7 @@ ToxiCheck/
 │   ├── logreg_model.pkl      # Logistic Regression
 │   └── svm_model.pkl         # SVM Linear
 ├── nlp_aol.ipynb             # Notebook training & evaluasi model
-├── streamlit_app.py          # Aplikasi web Streamlit
-├── Dockerfile                # Konfigurasi container Docker
+├── app.py                    # Aplikasi web Gradio
 └── requirements.txt          # Dependensi Python
 ```
 
@@ -117,24 +118,14 @@ tetap digunakan sebagai tiebreaker ketika voting seri 2-2.
 
 ## Cara Menjalankan
 
-### Opsi 1 — Docker (Direkomendasikan)
-
-Tidak perlu install Python atau dependensi apapun.
+### Opsi 1 — Hugging Face Spaces
 
 ```bash
-# 1. Clone repo
-git clone <repo-url>
-cd ToxiCheck
-
-# 2. Build image
-docker build -t toxicheck .
-
-# 3. Jalankan container
-docker run -p 8501:8501 toxicheck
-
-# 4. Buka browser
-# → http://localhost:8501
+# Push langsung ke remote Hugging Face Space
+git push space main
 ```
+
+Space dikonfigurasi menggunakan Gradio SDK sehingga tidak memerlukan Docker.
 
 ### Opsi 2 — Lokal (Manual)
 
@@ -142,8 +133,8 @@ docker run -p 8501:8501 toxicheck
 # 1. Install dependensi
 pip install -r requirements.txt
 
-# 2. Jalankan aplikasi
-streamlit run streamlit_app.py
+# 2. Jalankan aplikasi Gradio
+python app.py
 ```
 
 ### Opsi 3 — Jalankan Notebook Training
@@ -160,7 +151,7 @@ Jalankan semua cell secara berurutan. Proses stemming Sastrawi memakan beberapa 
 
 ## Tech Stack
 
-Python · Streamlit · scikit-learn · NLTK · PySastrawi · pandas · NumPy · joblib · Docker
+Python · Gradio · scikit-learn · NLTK · PySastrawi · pandas · NumPy · joblib
 
 ---
 
