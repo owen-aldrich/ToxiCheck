@@ -5,7 +5,7 @@ colorFrom: red
 colorTo: yellow
 sdk: gradio
 sdk_version: 6.30.0
-python_version: 3.11
+python_version: 3.10
 app_file: app.py
 tags:
 - gradio
@@ -53,6 +53,7 @@ ToxiCheck/
 │   └── svm_model.pkl         # SVM Linear
 ├── nlp_aol.ipynb             # Notebook training & evaluasi model
 ├── app.py                    # Aplikasi web Gradio
+├── requirements-local.txt    # Dependensi tambahan untuk penggunaan lokal
 └── requirements.txt          # Dependensi Python
 ```
 
@@ -131,7 +132,7 @@ Space dikonfigurasi menggunakan Gradio SDK sehingga tidak memerlukan Docker.
 
 ```bash
 # 1. Install dependensi
-pip install -r requirements.txt
+pip install -r requirements-local.txt
 
 # 2. Jalankan aplikasi Gradio
 python app.py

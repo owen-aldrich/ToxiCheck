@@ -9,6 +9,19 @@ import pandas as pd
 from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
+try:
+    import spaces
+except ImportError:
+    # Memungkinkan aplikasi tetap dijalankan secara lokal tanpa paket ZeroGPU.
+    class _LocalSpaces:
+        @staticmethod
+        def GPU(*decorator_args, **decorator_kwargs):
+            if decorator_args and callable(decorator_args[0]):
+                return decorator_args[0]
+            return lambda function: function
+
+    spaces = _LocalSpaces()
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -88,6 +101,7 @@ def majority_style(prediction):
     }.get(prediction, "mv-neutral")
 
 
+@spaces.GPU(duration=10)
 def predict_text(user_input):
     if not user_input or not user_input.strip():
         raise gr.Error("Silakan masukkan teks terlebih dahulu!")
@@ -267,4 +281,4 @@ with gr.Blocks(title="ToxiCheck") as demo:
 
 
 if __name__ == "__main__":
-    demo.launch(css=CSS)
+    demo.launch(css=CSS, ssr_mode=False)
