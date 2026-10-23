@@ -27,7 +27,7 @@ Proyek ini dibuat untuk tugas NLP (Application of Learning / AoL).
 - 🔍 **Input teks bebas** — masukkan tweet atau kalimat apapun untuk dianalisis
 - 🤖 **4 model sekaligus** — Naive Bayes, K-NN, Logistic Regression, SVM (Linear)
 - 🗳️ **Majority Vote** — kesimpulan akhir berdasarkan suara terbanyak dari keempat model
-- ⚠️ **Tiebreaker otomatis** — jika seri 2-2, prediksi SVM digunakan sebagai penentu (akurasi tertinggi), disertai notifikasi ke pengguna
+- ⚠️ **Tiebreaker otomatis** — jika seri 2-2, prediksi SVM digunakan sebagai penentu karena memperoleh CV Macro F1 tertinggi
 - 📖 **Panduan Kategori** — kotak deskripsi permanen yang menjelaskan arti tiap label
 - 📊 **Rincian voting** — distribusi suara tiap model ditampilkan secara visual
 
@@ -88,14 +88,30 @@ Fungsi `text_cleaner()` diterapkan pada setiap teks sebelum prediksi:
 
 ## Model & Hasil Evaluasi
 
-| Model               | Vectorizer  | Accuracy   | F1 Macro   |
-|---------------------|-------------|------------|------------|
-| Naive Bayes         | CountVec    | 0.7912     | 0.7451     |
-| K-NN                | TF-IDF      | 0.7024     | 0.6730     |
-| Logistic Regression | TF-IDF      | 0.8151     | 0.7825     |
-| **SVM (Linear)**    | **TF-IDF**  | **0.8166** | **0.7865** |
+Hyperparameter setiap model dipilih menggunakan `GridSearchCV` dengan
+`StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`. Proses tuning hanya
+menggunakan data train dan memilih kandidat berdasarkan **Macro F1**. Test set
+20% tetap dipisahkan untuk evaluasi akhir.
 
-SVM (Linear) adalah model terbaik secara keseluruhan dan digunakan sebagai tiebreaker saat terjadi seri 2-2.
+| Model               | Vectorizer | CV Macro F1 | Accuracy   | Macro Precision | HS Recall  | Test Macro F1 |
+|---------------------|------------|-------------|------------|-----------------|------------|---------------|
+| Naive Bayes         | CountVec   | 0.7483      | 0.7809     | 0.7494          | 0.8129     | 0.7548        |
+| K-NN                | TF-IDF     | 0.6967      | 0.7369     | 0.7223          | 0.8085     | 0.7060        |
+| **Logistic Regression** | **TF-IDF** | 0.7845  | **0.8193** | **0.7998**      | **0.8273** | **0.7909**    |
+| SVM (Linear)        | TF-IDF     | **0.7864**  | 0.8090     | 0.7765          | 0.8192     | 0.7787        |
+
+Hyperparameter terbaik:
+
+| Model               | Parameter terbaik                       |
+|---------------------|------------------------------------------|
+| Naive Bayes         | `alpha=0.1`                              |
+| K-NN                | `metric='cosine'`, `n_neighbors=11`      |
+| Logistic Regression | `C=10.0`, `class_weight=None`            |
+| SVM (Linear)        | `C=2.0`, `class_weight='balanced'`       |
+
+Logistic Regression memberikan hasil terbaik pada test set, dengan accuracy
+0.8193 dan Macro F1 0.7909. SVM memperoleh CV Macro F1 tertinggi (0.7864) dan
+tetap digunakan sebagai tiebreaker ketika voting seri 2-2.
 
 ---
 
